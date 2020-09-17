@@ -3,7 +3,7 @@ package com.duyi.onlinevideo.entity;
 import java.util.Date;
 
 /**
- * 横幅图片
+ * 横幅
  */
 public class Banner implements java.io.Serializable {
     /** 版本号 */
