@@ -1,10 +1,7 @@
 package com.duyi.onlinevideo.entity;
 
 /**
- * course_type
- * 
- * @author bianj
- * @version 1.0.0 2020-09-16
+ * 课程类型
  */
 public class CourseType implements java.io.Serializable {
     /** 版本号 */
@@ -13,10 +10,10 @@ public class CourseType implements java.io.Serializable {
     /** 课程id */
     private Integer id;
 
-    /** 课程类型名 */
+    /** 类目名 */
     private String name;
 
-    /** flag */
+    /** 类目状态 */
     private Integer flag;
 
     /**
