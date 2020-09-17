@@ -2,12 +2,6 @@ package com.duyi.onlinevideo.entity;
 
 import java.util.Date;
 
-/**
- * course_topic
- * 
- * @author bianj
- * @version 1.0.0 2020-09-16
- */
 public class CourseTopic implements java.io.Serializable {
     /** 版本号 */
     private static final long serialVersionUID = -2234628756139393659L;
