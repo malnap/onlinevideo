@@ -2,12 +2,6 @@ package com.duyi.onlinevideo.entity;
 
 import java.util.Date;
 
-/**
- * banner
- * 
- * @author bianj
- * @version 1.0.0 2020-09-16
- */
 public class Banner implements java.io.Serializable {
     /** 版本号 */
     private static final long serialVersionUID = 608131098407480109L;
