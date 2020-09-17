@@ -28,7 +28,6 @@ public class CourseType implements java.io.Serializable {
     /**
      * 设置id
      * 
-     * @param id
      */
     public void setId(Integer id) {
         this.id = id;
