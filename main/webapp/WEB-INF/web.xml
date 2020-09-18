@@ -5,15 +5,16 @@
          http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
 
     <display-name>Archetype Created Web Application</display-name>
+
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
 
-    <!--    配置springmvc-->
+    <!-- 配置spring mvc-->
     <servlet>
         <servlet-name>dispatcher</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <!--    需要加载的配置文件-->
+        <!-- 需要加载的配置文件-->
         <init-param>
             <param-name>contextConfigLocation</param-name>
             <param-value>classpath:spring/*.xml</param-value>

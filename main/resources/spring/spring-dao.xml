@@ -58,8 +58,7 @@
         <property name="testOnBorrow" value="${jdbc.testOnBorrow}"/>
         <property name="testOnReturn" value="${jdbc.testOnReturn}"/>
         <property name="poolPreparedStatements" value="${jdbc.poolPreparedStatements}"/>
-        <property name="maxPoolPreparedStatementPerConnectionSize"
-                  value="${jdbc.maxPoolPreparedStatementPerConnectionSize}"/>
+        <property name="maxPoolPreparedStatementPerConnectionSize" value="${jdbc.maxPoolPreparedStatementPerConnectionSize}"/>
     </bean>
 
 </beans>

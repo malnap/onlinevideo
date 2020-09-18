@@ -20,6 +20,9 @@
     </bean>
 
     <!-- 静态资源处理 -->
-    <!--    <mvc:resources mapping="/imgs/**" location="/imgs/"></mvc:resources> -->
-
+    <mvc:default-servlet-handler/>
+    <!--    <mvc:resources mapping="/static/imgs/**" location="/static/imgs/"></mvc:resources>-->
+    <!--    <mvc:resources mapping="/static/css/**" location="/static/css/"></mvc:resources>-->
+    <!--    <mvc:resources mapping="/static/fonts/**" location="/static/fonts/"></mvc:resources>-->
+    <!--    <mvc:resources mapping="/static/js/**" location="/static/js/"></mvc:resources>-->
 </beans>
