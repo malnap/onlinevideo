@@ -4,6 +4,8 @@ import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.LineCaptcha;
 import cn.hutool.captcha.generator.RandomGenerator;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
+import com.duyi.onlinevideo.dto.ResponseResult;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -71,9 +73,15 @@ public class VcodeController {
 
     }
 
+    /**
+     * 该方法用于绘制验证码,同时将验证码保存在session作用域中方便数据比对
+     * @param session session对于保存验证码
+     * @param response 响应该验证码图片给浏览器
+     */
     @ResponseBody
     @RequestMapping("/vcode")
-    public void vode1(HttpSession session, HttpServletResponse response) {
+    public void vcode(HttpSession session, HttpServletResponse response) {
+
         /* 自定义纯数字的验证码（随机4位数字,可重复）*/
         RandomGenerator randomGenerator = new RandomGenerator("0123456789", 4);
 
@@ -94,11 +102,12 @@ public class VcodeController {
         lineCaptcha.createCode();
 
         /* 拿到生成的验证码 */
-        String v_code = lineCaptcha.getCode();
+        String sVcode = lineCaptcha.getCode();
 
-        /* 将字符串验证码保存到session中 */
-        session.setAttribute("v_code", v_code);
+        /* 将字符串验证码保存到session中,据进行比对 */
+        session.setAttribute("session_vcode", sVcode);
 
+        /* 输出流将数据写回给浏览器 */
         try {
             ServletOutputStream out = response.getOutputStream();
             lineCaptcha.write(out);
@@ -107,5 +116,33 @@ public class VcodeController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 校验前台输入的数据与session中的数据
+     * @param vcode 前台输入的数据
+     * @param session session中的真实数据
+     * @return 返回一个json格式的对象
+     */
+    @ResponseBody
+    @RequestMapping("/checkVcode")
+    public ResponseResult checkVcode(String vcode,HttpSession session) {
+
+        /* 默认验证码无效 */
+        ResponseResult<String> result = new ResponseResult<>(-1, "vcode invalid");
+
+        /* 拿到保存在session中的验证码,与用户输入的进行比对 */
+        String sVcode = (String) session.getAttribute("session_vcode");
+
+        /* 如果两者有一个为空 或 前台数据与session中真实数据不匹配 */
+        if (StrUtil.isEmpty(vcode) || StrUtil.isEmpty(sVcode) || !vcode.equals(sVcode)) {
+            /* 返回错误的响应代号 */
+            return result;
+        }
+
+        /* 重新设置验证码有效 */
+        result.setRcode(1);
+        result.setMessage("ok");
+        return result;
     }
 }

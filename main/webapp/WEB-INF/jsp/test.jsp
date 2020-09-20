@@ -8,8 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/bootstrap.min.css"
-          crossorigin="anonymous">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/bootstrap.min.css" crossorigin="anonymous">
 
 </head>
 <body>
@@ -125,9 +124,9 @@
      aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form method="post" action="/regist">
+            <form method="post" action="/register" onsubmit="return registerSubmit()">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">注册</h5>
+                    <h5 class="modal-title" id="exampleModalLabe">注册</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -136,9 +135,9 @@
 
                     <div class="form-row">
                         <div class="col-md-12 mb-3">
-                            <label for="validationServer01">邮箱</label>
-                            <%-- 验证有效邮箱的正则表达式 --%>
-                            <input type="text" name="email" placeholder="请输入邮箱"
+                            <label for="validationEmail">邮箱</label>
+                            <%-- 验证有效邮箱的正则表达式,onblur事件会在失去焦点时发送--%>
+                            <input type="text" name="email" placeholder="请输入邮箱" onblur="checkEmail(this)"
                                    pattern="[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?"
                                    class="form-control " id="validationEmail" required>
                             <div class="valid-feedback" id="feedbackEmail">
@@ -149,7 +148,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12 mb-3">
-                            <label for="validationServer01">手机</label>
+                            <label for="validationMobile">手机</label>
                             <%-- 11位手机号的正则表达式验证 --%>
                             <input type="text" name="mobile" placeholder="请输入手机号" pattern="1[3456789]\d{9}$"
                                    class="form-control "
@@ -162,7 +161,7 @@
 
                     <div class="form-row">
                         <div class="col-md-12 mb-3">
-                            <label for="validationServer03">密码</label>
+                            <label for="validationPassword">密码</label>
                             <input type="password" name="password" placeholder="包含数字和字母且在6-20位之间"
                                    pattern="^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$).{6,20}$" class="form-control"
                                    id="validationPassword" required>
@@ -175,13 +174,14 @@
                     <div class="form-row">
                         <div class="col-md-12 mb-3">
                             <label for="validationVcode">验证码</label>
+                            <!-- is-valid is-invalid-->
                             <div class="row">
                                 <div class="col-md-7">
                                     <input type="text" name="vcode" placeholder="请输入验证码"
-                                                             class="form-control"
-                                                             id="validationVcode"
-                                                             maxlength="4"
-                                                             required>
+                                           class="form-control"
+                                           id="validationVcode"
+                                           maxlength="4"
+                                           required>
                                     <div class="valid-feedback" id="feedbackVcode">
                                         Looks good!
                                     </div>
@@ -209,20 +209,74 @@
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
+<script src="${pageContext.request.contextPath}/static/js/jquery-3.3.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
         crossorigin="anonymous"></script>
-<script src="/static/js/bootstrap.min.js"
-        crossorigin="anonymous"></script>
+<script src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
 
 <script type="application/javascript">
+
+    function checkEmail(emailNode) {
+        var email = emailNode.value;
+        $.ajax({
+            url: "/checkEmail?email=" + email,
+            success: function (result) {
+                if (result.rcode == 1) {
+                    // 可以注册 valid-feedback invalid-feedback
+                    $("#validationEmail").addClass("is-valid");
+                    $("#validationEmail").removeClass("is-invalid");
+                    $("#feedbackEmail").text("邮箱可用");
+                    $("#feedbackEmail").attr("class", "valid-feedback");
+                } else {
+                    // 不可以注册
+                    $("#validationEmail").addClass("is-invalid");
+                    $("#validationEmail").removeClass("is-valid");
+                    $("#feedbackEmail").text("邮箱不可用！");
+                    $("#feedbackEmail").attr("class", "invalid-feedback");
+                }
+            }
+        });
+    }
+
     function changeVcode(imgNode) {
         <!-- 增加验证码的点击事件,每点击一次换一次 -->
         imgNode.src = "/vcode?ram=" + new Date().getTime();
     }
+
+    function registerSubmit() {
+        var vcodeFlag = checkVcode();
+        if (!vcodeFlag) {
+            // 验证码不正确
+            $("#validationVcode").removeClass("is-valid");
+            $("#validationVcode").addClass("is-invalid");
+            $("#feedbackVcode").text("验证码填写错误！");
+            $("#feedbackVcode").attr("class", "invalid-feedback");
+            return false;
+        }
+        // 提交注册
+        return true;
+    }
+
+    function checkVcode() {
+        var vcode = $("#validationVcode").val();
+        var flag = false;
+        $.ajax({
+            url: "/checkVcode?vcode=" + vcode,
+            success: function (result) {
+                if (result.rcode == 1) {
+                    flag = true;
+                } else {
+                    flag = false;
+                }
+            },
+            // 同步请求
+            // 不能用异步,因为还没等到checkEmail给结果,registerSubmit就提交了
+            async: false
+        });
+        return flag;
+    }
+
 </script>
 </body>
 </html>

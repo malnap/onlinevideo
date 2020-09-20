@@ -6,19 +6,32 @@ import com.duyi.onlinevideo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+
 @Service
 public class UserServiceImpl implements UserService {
 
+    private final UserDao userDao;
+
     @Autowired
-    private UserDao userDao;
+    public UserServiceImpl(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     @Override
-    public int regist(User user) {
+    public int register(User user) {
         return userDao.insertUser(user);
     }
 
     @Override
     public User login(User user) {
         return null;
+    }
+
+    @Override
+    public User isExistEmail(String email) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("email", email);
+        return userDao.findUserByCondition(map);
     }
 }
