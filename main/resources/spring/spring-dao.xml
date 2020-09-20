@@ -8,19 +8,22 @@
         http://www.springframework.org/schema/tx
         http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-    <!-- 配置数据库 -->
+    <!-- 加载配置文件 -->
     <context:property-placeholder location="classpath:jdbc.properties"/>
 
     <!-- sqlSessionFactory配置 -->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!-- 注入数据库连接池 -->
+        <property name="dataSource" ref="dataSource"/>
+        <!-- 指定 MyBatis 的映射器 XML 配置文件的位置 -->
+        <!-- 第一种是手动在 MyBatis 的 XML 配置文件中的 <mappers> 部分中指定 XML 文件的类路径,
+        第二种是设置工厂 bean 的 mapperLocations 属性 -->
+        <property name="mapperLocations" value="classpath:mapper/*.xml"/>
         <!-- 配置MyBatis全局配置文件:mybatis-config.XML -->
         <property name="configLocation" value="classpath:mybatis-config.xml"/>
         <!-- 扫描entity包 使用别名 -->
         <property name="typeAliasesPackage" value="com.duyi.onlinevideo.entity"/>
-        <!-- 扫描sql配置文件:mapper需要的xml文件 -->
-        <property name="mapperLocations" value="classpath:mapper/*.xml"/>
-        <!-- 注入数据库连接池 -->
-        <property name="dataSource" ref="dataSource"/>
+
     </bean>
 
     <!-- 配置扫描dao接口包,动态实现dao接口,并注入到spring容器中 -->
@@ -31,9 +34,9 @@
         <property name="basePackage" value="com.duyi.onlinevideo.dao"/>
     </bean>
 
-    <!-- 事务相关 -->
+    <!-- 开启 Spring 的事务处理功能 -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource"/>
+        <constructor-arg ref="dataSource"/>
     </bean>
 
     <!-- 使用事务的注解方式 -->
