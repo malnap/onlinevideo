@@ -8,11 +8,12 @@ import com.duyi.onlinevideo.exception.UserException;
 import com.duyi.onlinevideo.service.UserService;
 import com.duyi.onlinevideo.dto.ResponseResult;
 import com.duyi.onlinevideo.utils.Constants;
-import com.duyi.onlinevideo.utils.VideoUtil;
+import com.duyi.onlinevideo.utils.AutoLoginUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.ServletContext;
@@ -33,48 +34,61 @@ public class UserController {
     }
 
     /**
-     * 在表单提交时会触发ajax发送该请求,
-     * 用来判断用户名与密码是否匹配,
-     * 若不正确,告诉错误信息给用户.
+     * 点登录按钮以后,先发ajax校验,校验用户名或密码是否正确,对用户进行提示;
+     * 再次进行form表单验证.无论ajax验证成功还是失败,都会再次提交form表单.
+     * @param user 前台传来的数据,框架自动帮我们组成user对象
+     * @return 返回JSON对象
      */
     @ResponseBody
     @RequestMapping(value = "/checkLogin", method = RequestMethod.POST)
     public ResponseResult checkLogin(User user) {
+        /* 默认是失败状态 */
         ResponseResult responseResult = new ResponseResult(-1, "login error");
 
+        /* 如果表单提交过来的邮箱或密码为空,直接返回错误码 */
         if (StrUtil.isEmpty(user.getEmail()) || StrUtil.isEmpty(user.getPassword())) {
             return responseResult;
         }
 
+        /* 在DB中查询并验证该条记录 */
         User dbUser = userService.login(user);
+        /* 该记录不存在 */
         if (dbUser == null) {
             return responseResult;
         }
+        /* 记录存在,修改返回码 */
         responseResult.setRcode(1);
         responseResult.setMessage("ok");
         return responseResult;
     }
 
+    /**
+     *
+     */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String login(User user, String autoLogin, HttpServletRequest request,
+    public String login(User user, @RequestParam("autoLogin") String autoLogin, HttpServletRequest request,
                         HttpSession session, HttpServletResponse response) {
 
+        /* 创建全局作用域,存放token数据 */
         ServletContext application = request.getServletContext();
 
+        /* 判断用户输入数据的有效性 */
         if (StrUtil.isEmpty(user.getEmail()) || StrUtil.isEmpty(user.getPassword())) {
             throw new UserException("参数错误");
         }
 
+        /* 在DB中查询并验证该条记录 */
         User dbUser = userService.login(user);
+        /* dbUser存在,存入session */
         if (dbUser != null) {
-            /* dbUser存在,登陆成功存入session  */
             session.setAttribute("login_user", user);
         }
 
         /* 自动登陆的逻辑 */
         if (StrUtil.isEmpty(autoLogin) || "1".equals(autoLogin)) {
             /* 服务器端保存token对应的loginToken数据,保存在application */
-            LoginToken loginToken = VideoUtil.generateLoginToken(request, user);
+            LoginToken loginToken = AutoLoginUtil.generateLoginToken(request, user);
+            /* 拿着封装好数据的loginToken去生成md5加密过的令牌cookie */
             Cookie cookie = new Cookie("autoToken", loginToken.generateToken());
             /* 设置cookie保存属性 */
             cookie.setPath("/");
@@ -83,13 +97,15 @@ public class UserController {
             /* 服务端将生成的凭证cookie返回给客户端cookie */
             response.addCookie(cookie);
 
-            /* 服务器保存对应的LoginToken用户登录数据 */
+            /* 服务器保存对应的LoginToken用户登录数据到tokenMap */
             @SuppressWarnings("unchecked")
             HashMap<String, LoginToken> tokenMap = (HashMap<String, LoginToken>)application.getAttribute(Constants.AUTO_LOGIN_TOKEN);
             if (tokenMap == null) {
                 /* 初始化tokenMap */
                 tokenMap = new HashMap<>();
+                /* key=md5加密过后的令牌,value为封装了用户数据 + 浏览器信息 + ip的loginToken对象 */
                 tokenMap.put(loginToken.generateToken(), loginToken);
+                /* 将tokenMap设置到全局作用域 */
                 application.setAttribute(Constants.AUTO_LOGIN_TOKEN, tokenMap);
             } else {
                 /* 已经初始化,直接保存loginToken */
@@ -107,13 +123,13 @@ public class UserController {
         session.removeAttribute("login_user");
 
         /* 2.清空application中用户的登录数据 */
-        String tokenValue = VideoUtil.getCookieTokenValue(request);
-        if (!StrUtil.isEmpty(tokenValue)) {
+        String autoToken = AutoLoginUtil.getCookieOfAutoToken(request.getCookies());
+        if (!StrUtil.isEmpty(autoToken)) {
             ServletContext application = request.getServletContext();
             @SuppressWarnings("unchecked")
             HashMap<String, LoginToken> tokenMap = (HashMap<String, LoginToken>) application.getAttribute(Constants.AUTO_LOGIN_TOKEN);
-            /* 删除服务器中token对应的user数据 */
-            tokenMap.remove(tokenValue);
+            /* 删除服务器中tokenMap对应的user数据 */
+            tokenMap.remove(autoToken);
         }
 
         /* 3.设置cookie失效 */

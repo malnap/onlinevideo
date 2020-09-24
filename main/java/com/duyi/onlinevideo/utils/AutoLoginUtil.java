@@ -12,7 +12,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 
-public class VideoUtil {
+/**
+ * 自动登录工具类
+ */
+public class AutoLoginUtil {
 
     /**
      * 获取IP地址
@@ -56,6 +59,10 @@ public class VideoUtil {
 
     /**
      * 生成服务器保存的用户token对象
+     *
+     * @param request 用于获取浏览器信息
+     * @param user 用于获取用户信息
+     * @return 返回LoginToken对象
      */
     public static LoginToken generateLoginToken(HttpServletRequest request, User user) {
         /* 时间 + 用户(email) + IP + 浏览器信息 = （MD5）*/
@@ -72,12 +79,8 @@ public class VideoUtil {
      */
     public static User getUserByApplication(Cookie[] cookies, ServletContext application) {
         /* 拿到存储在浏览器端的名为autoToken的cookie值 */
-        String cookieToken = null;
-        for (Cookie cookie : cookies) {
-            if ("autoToken".equals(cookie.getName())) {
-                cookieToken = cookie.getValue();
-            }
-        }
+        String cookieToken = getCookieOfAutoToken(cookies);
+
         /* 获取服务器中的所有用户登录的token数据 */
         @SuppressWarnings("unchecked")
         HashMap<String, LoginToken> tokenMap = (HashMap<String, LoginToken>) application.getAttribute(Constants.AUTO_LOGIN_TOKEN);
@@ -87,41 +90,21 @@ public class VideoUtil {
         return token.getUser();
     }
 
-    public static String getCookieTokenValue(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (ObjectUtil.isEmpty(cookies) || cookies.length == 0) {
-            return "";
-        }
-
-        for (Cookie cookie : cookies) {
-            String cName = cookie.getName();
-            if ("autoToken".equals(cName)) {
-                return cookie.getValue();
-            }
-        }
-        return "";
-    }
-
     /**
      * 校验用户的token是否有效,token存在且没有失效
      */
     public static boolean checkLoginToken(Cookie[] cookies, ServletContext application) {
 
+        /* 需要重新登陆,cookie没有数据 */
         if (ObjectUtil.isEmpty(cookies) || cookies.length == 0) {
-            /* 需要重新登陆,cookie没有数据 */
             return false;
         }
 
-        String cookieToken = null;
         /* 拿到存储在浏览器端的名为autoToken的cookie值 */
-        for (Cookie cookie : cookies) {
-            if ("autoToken".equals(cookie.getName())) {
-                cookieToken = cookie.getValue();
-            }
-        }
+        String cookieToken = getCookieOfAutoToken(cookies);
 
+        /* 需要重新登陆,没有服务器返回对应的登录凭证 */
         if (StrUtil.isEmpty(cookieToken)) {
-            /* 需要重新登陆,没有服务器返回对应的登录凭证 */
             return false;
         }
 
@@ -129,16 +112,16 @@ public class VideoUtil {
         @SuppressWarnings("unchecked")
         HashMap<String, LoginToken> tokenMap = (HashMap<String, LoginToken>) application.getAttribute(Constants.AUTO_LOGIN_TOKEN);
 
+        /* 服务器还未初始化HashMap */
         if (ObjectUtil.isEmpty(tokenMap)) {
-            /* 服务器还未初始化HashMap */
             return false;
         }
 
         /* 根据客户端的token,获取服务器中的用户数据 */
         LoginToken token = tokenMap.get(cookieToken);
 
+        /* 服务器中没有对应的用户数据 */
         if (ObjectUtil.isEmpty(token)) {
-            /* 服务器中没有对应的用户数据 */
             return false;
         }
 
@@ -156,5 +139,21 @@ public class VideoUtil {
 
         /* 验证通过可以自动登录;客户端token凭证失效,需要重新登陆 */
         return cookieToken.equals(serverToken);
+    }
+
+    /**
+     * 拿到存储在浏览器端的名为autoToken的cookie值
+     */
+    public static String getCookieOfAutoToken(Cookie[] cookies) {
+        if (ObjectUtil.isEmpty(cookies) || cookies.length == 0) {
+            return "";
+        }
+
+        for (Cookie cookie : cookies) {
+            if ("autoToken".equals(cookie.getName())) {
+                return cookie.getValue();
+            }
+        }
+        return "";
     }
 }

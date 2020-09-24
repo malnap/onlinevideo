@@ -3,9 +3,8 @@ package com.duyi.onlinevideo.dto;
 import cn.hutool.crypto.digest.DigestUtil;
 import com.duyi.onlinevideo.entity.User;
 
-
 /**
- * 封装了 用户 + ip + user-agent浏览器信息 + 登陆时间 作为自动登陆的token
+ * LoginToken类封装了 用户 + ip + 浏览器信息 + 时间 作为自动登陆的token令牌
  */
 public class LoginToken {
 
@@ -16,6 +15,7 @@ public class LoginToken {
 
     /**
      * 生成自动登录的凭证
+     * @return 返回md5加密过后的token令牌
      */
     public String generateToken() {
         /* 时间 + 用户(email) + IP + 浏览器信息 = （MD5）*/

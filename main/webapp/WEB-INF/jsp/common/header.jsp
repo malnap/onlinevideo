@@ -107,14 +107,15 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
                     <button type="submit" class="btn btn-primary">登录</button>
                 </div>
+
                 <div class="mb-3 ml-3">
                     <a href="#" data-toggle="modal" data-dismiss="modal" data-target="#registModal">还没有账号？点我注册</a>
                 </div>
-
             </form>
         </div>
     </div>
@@ -241,7 +242,10 @@
         $.ajax({
             url: "/checkLogin",
             type: "POST",
-            data: {email: $("#validationLoginEmail").val(), password: $("#validationLoginPassword").val()},
+            data: {
+                email: $("#validationLoginEmail").val(),
+                password: $("#validationLoginPassword").val()
+            },
             // 同步请求
             async: false,
             success: function (result) {
