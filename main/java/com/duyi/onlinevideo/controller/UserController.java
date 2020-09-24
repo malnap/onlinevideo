@@ -2,16 +2,25 @@ package com.duyi.onlinevideo.controller;
 
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
+import com.duyi.onlinevideo.dto.LoginToken;
 import com.duyi.onlinevideo.entity.User;
 import com.duyi.onlinevideo.exception.UserException;
 import com.duyi.onlinevideo.service.UserService;
 import com.duyi.onlinevideo.dto.ResponseResult;
+import com.duyi.onlinevideo.utils.Constants;
+import com.duyi.onlinevideo.utils.VideoUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 
 @Controller
 public class UserController {
@@ -21,6 +30,96 @@ public class UserController {
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public String login(User user, String autoLogin, HttpServletRequest request,
+                        HttpSession session, HttpServletResponse response) {
+
+        ServletContext application = request.getServletContext();
+
+        if (StrUtil.isEmpty(user.getEmail()) || StrUtil.isEmpty(user.getPassword())) {
+            throw new UserException("参数错误");
+        }
+
+        User dbUser = userService.login(user);
+        if (dbUser != null) {
+            /* dbUser存在,登陆成功存入session  */
+            session.setAttribute("login_user", user);
+        }
+
+        /* 自动登陆的逻辑 */
+        if (StrUtil.isEmpty(autoLogin) || "1".equals(autoLogin)) {
+            /*
+             * 1.生成cookie返回给客户端凭证cookie
+             * 2.服务器端保存token对应的loginToken数据,保存在application
+             */
+            LoginToken loginToken = VideoUtil.generateLoginToken(request, user);
+            Cookie cookie = new Cookie("autoToken", loginToken.generateToken());
+            /* 设置COOKIE保存属性 */
+            cookie.setPath("/");
+            /* 设置cookie的存活时间48小时,单位为s */
+            cookie.setMaxAge(60 * 60 * 48);
+            response.addCookie(cookie);
+
+            /* 服务器保存对应的LoginToken用户登录数据 */
+            @SuppressWarnings("unchecked")
+            HashMap<String, LoginToken> tokenMap = (HashMap<String, LoginToken>)application.getAttribute(Constants.AUTO_LOGIN_TOKEN);
+            if (tokenMap == null) {
+                /* 初始化 */
+                tokenMap = new HashMap<>();
+                tokenMap.put(loginToken.generateToken(), loginToken);
+                application.setAttribute(Constants.AUTO_LOGIN_TOKEN, tokenMap);
+            } else {
+                /* 已经初始化,直接保存loginToken */
+                tokenMap.put(loginToken.generateToken(), loginToken);
+            }
+        }
+
+        /* 重定向到首页 */
+        return "redirect:/";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/checkLogin", method = RequestMethod.POST)
+    public ResponseResult checkLogin(User user) {
+        ResponseResult responseResult = new ResponseResult(-1, "login error");
+
+        if (StrUtil.isEmpty(user.getEmail()) || StrUtil.isEmpty(user.getPassword())) {
+            return responseResult;
+        }
+
+        User dbUser = userService.login(user);
+        if (dbUser == null) {
+            return responseResult;
+        }
+        responseResult.setRcode(1);
+        responseResult.setMessage("ok");
+        return responseResult;
+    }
+
+    @RequestMapping(value = "/logout")
+    public String logout(HttpSession session, HttpServletResponse response, HttpServletRequest request) {
+        /* 1.清空用户session */
+        session.removeAttribute("login_user");
+
+        /* 2.清空application中用户的登录数据 */
+        String tokenValue = VideoUtil.getCookieTokenValue(request);
+        if (!StrUtil.isEmpty(tokenValue)) {
+            ServletContext application = request.getServletContext();
+            @SuppressWarnings("unchecked")
+            HashMap<String, LoginToken> tokenMap = (HashMap<String, LoginToken>) application.getAttribute(Constants.AUTO_LOGIN_TOKEN);
+            /* 删除服务器中token对应的user数据 */
+            tokenMap.remove(tokenValue);
+        }
+
+        /* 3.设置cookie失效 */
+        Cookie cookie = new Cookie("autoToken", "invalid");
+        /*  设置cookie保存属性 */
+        cookie.setPath("/");
+        cookie.setMaxAge(1);
+        response.addCookie(cookie);
+        return "redirect:/";
     }
 
     /**
@@ -59,7 +158,7 @@ public class UserController {
         session.setAttribute("login_user", user);
 
         /*  重定向到首页 */
-        return "redirect:test";
+        return "redirect:index";
     }
 
     /**

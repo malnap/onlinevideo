@@ -19,6 +19,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
+/**
+ * 该类实现了验证码的生成和验证
+ */
 @Controller
 public class VcodeController {
 
