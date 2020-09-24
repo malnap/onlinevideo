@@ -25,4 +25,12 @@
     <mvc:resources mapping="/static/css/**" location="/static/css/"/>
     <mvc:resources mapping="/static/fonts/**" location="/static/fonts/"/>
     <mvc:resources mapping="/static/js/**" location="/static/js/"/>
+
+    <mvc:interceptors>
+        <!-- 自动登录拦截器 -->
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <bean class="com.duyi.onlinevideo.interceptor.AutoLoginInterceptor"></bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
 </beans>

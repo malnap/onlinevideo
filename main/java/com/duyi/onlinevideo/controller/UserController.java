@@ -32,6 +32,29 @@ public class UserController {
         this.userService = userService;
     }
 
+    /**
+     * 在表单提交时会触发ajax发送该请求,
+     * 用来判断用户名与密码是否匹配,
+     * 若不正确,告诉错误信息给用户.
+     */
+    @ResponseBody
+    @RequestMapping(value = "/checkLogin", method = RequestMethod.POST)
+    public ResponseResult checkLogin(User user) {
+        ResponseResult responseResult = new ResponseResult(-1, "login error");
+
+        if (StrUtil.isEmpty(user.getEmail()) || StrUtil.isEmpty(user.getPassword())) {
+            return responseResult;
+        }
+
+        User dbUser = userService.login(user);
+        if (dbUser == null) {
+            return responseResult;
+        }
+        responseResult.setRcode(1);
+        responseResult.setMessage("ok");
+        return responseResult;
+    }
+
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String login(User user, String autoLogin, HttpServletRequest request,
                         HttpSession session, HttpServletResponse response) {
@@ -50,23 +73,21 @@ public class UserController {
 
         /* 自动登陆的逻辑 */
         if (StrUtil.isEmpty(autoLogin) || "1".equals(autoLogin)) {
-            /*
-             * 1.生成cookie返回给客户端凭证cookie
-             * 2.服务器端保存token对应的loginToken数据,保存在application
-             */
+            /* 服务器端保存token对应的loginToken数据,保存在application */
             LoginToken loginToken = VideoUtil.generateLoginToken(request, user);
             Cookie cookie = new Cookie("autoToken", loginToken.generateToken());
-            /* 设置COOKIE保存属性 */
+            /* 设置cookie保存属性 */
             cookie.setPath("/");
-            /* 设置cookie的存活时间48小时,单位为s */
-            cookie.setMaxAge(60 * 60 * 48);
+            /* 设置cookie的存活时间48h,单位为s */
+            cookie.setMaxAge(60 * 60 * 24 * 2);
+            /* 服务端将生成的凭证cookie返回给客户端cookie */
             response.addCookie(cookie);
 
             /* 服务器保存对应的LoginToken用户登录数据 */
             @SuppressWarnings("unchecked")
             HashMap<String, LoginToken> tokenMap = (HashMap<String, LoginToken>)application.getAttribute(Constants.AUTO_LOGIN_TOKEN);
             if (tokenMap == null) {
-                /* 初始化 */
+                /* 初始化tokenMap */
                 tokenMap = new HashMap<>();
                 tokenMap.put(loginToken.generateToken(), loginToken);
                 application.setAttribute(Constants.AUTO_LOGIN_TOKEN, tokenMap);
@@ -78,24 +99,6 @@ public class UserController {
 
         /* 重定向到首页 */
         return "redirect:/";
-    }
-
-    @ResponseBody
-    @RequestMapping(value = "/checkLogin", method = RequestMethod.POST)
-    public ResponseResult checkLogin(User user) {
-        ResponseResult responseResult = new ResponseResult(-1, "login error");
-
-        if (StrUtil.isEmpty(user.getEmail()) || StrUtil.isEmpty(user.getPassword())) {
-            return responseResult;
-        }
-
-        User dbUser = userService.login(user);
-        if (dbUser == null) {
-            return responseResult;
-        }
-        responseResult.setRcode(1);
-        responseResult.setMessage("ok");
-        return responseResult;
     }
 
     @RequestMapping(value = "/logout")

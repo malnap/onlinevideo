@@ -74,6 +74,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
+
                 <div class="modal-body">
                     <div class="form-row">
                         <div class="col-md-12 mb-3">
@@ -84,8 +85,8 @@
                                 Looks good!
                             </div>
                         </div>
-
                     </div>
+
                     <div class="form-row">
                         <div class="col-md-12 mb-3">
                             <label for="validationLoginPassword">密码</label>
@@ -95,17 +96,13 @@
                                 Please provide a valid city.
                             </div>
                         </div>
-
-
                     </div>
+
                     <div class="form-group">
                         <div class="form-check">
                             <input class="form-check-input " name="autoLogin" type="checkbox" value="1"
                                    id="invalidCheck3">
-                            <label class="form-check-label">
-                                自动登录
-                            </label>
-
+                            <label class="form-check-label">自动登录</label>
                             <a href="#" class="float-right">忘记密码</a>
                         </div>
                     </div>
