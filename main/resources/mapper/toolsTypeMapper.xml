@@ -45,7 +45,7 @@
     </select>
     
     <!-- 插入数据 -->
-    <insert id="insertToolsType" parameterType="toolsType">
+    <insert id="insertToolsType" parameterType="map">
         INSERT INTO tools_type (
             id, name, flag
         ) VALUES (

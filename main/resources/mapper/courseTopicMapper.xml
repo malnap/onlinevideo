@@ -36,16 +36,16 @@
         <include refid="allColumns" />
         FROM course_topic ct WHERE 1 = 1
         <if test="title != null and title != ''">
-            AND ct.title LIKE CONCAT('%', #{title}, '%')
+            AND ct.title = #{title}
         </if>
         <if test="iconUrl != null and iconUrl != ''">
-            AND ct.icon_url LIKE CONCAT('%', #{iconUrl}, '%')
+            AND ct.icon_url = #{iconUrl}
         </if>
         <if test="introUrl != null and introUrl != ''">
-            AND ct.intro_url LIKE CONCAT('%', #{introUrl}, '%')
+            AND ct.intro_url = #{introUrl}
         </if>
         <if test="topicIntro != null and topicIntro != ''">
-            AND ct.topic_intro LIKE CONCAT('%', #{topicIntro}, '%')
+            AND ct.topic_intro = #{topicIntro}
         </if>
         <if test="views != null">
             AND ct.views = #{views}
@@ -60,10 +60,13 @@
             AND ct.vip_flag = #{vipFlag}
         </if>
         <if test="coursewareUrl != null and coursewareUrl != ''">
-            AND ct.courseware_url LIKE CONCAT('%', #{coursewareUrl}, '%')
+            AND ct.courseware_url = #{coursewareUrl}
         </if>
         <if test="createTime != null">
             AND ct.create_time = #{createTime}
+        </if>
+        <if test="order == 1">
+            ORDER BY ct.create_time DESC
         </if>
     </select>
     
@@ -78,7 +81,7 @@
     </select>
     
     <!-- 插入数据 -->
-    <insert id="insertCourseTopic" parameterType="courseTopic">
+    <insert id="insertCourseTopic" parameterType="map">
         INSERT INTO course_topic (
             id, title, icon_url, intro_url, topic_intro, views, flag, type_id, 
             vip_flag, courseware_url, create_time

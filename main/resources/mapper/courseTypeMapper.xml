@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.duyi.onlinevideo.dao.">
+<mapper namespace="com.duyi.onlinevideo.dao.CourseTypeDao">
     <!-- 字段映射 -->
     <resultMap id="courseTypeMap" type="CourseType">
         <id column="id" property="id" jdbcType="INTEGER" />

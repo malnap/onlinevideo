@@ -36,6 +36,7 @@ public class UserController {
     /**
      * 点登录按钮以后,先发ajax校验,校验用户名或密码是否正确,对用户进行提示;
      * 再次进行form表单验证.无论ajax验证成功还是失败,都会再次提交form表单.
+     *
      * @param user 前台传来的数据,框架自动帮我们组成user对象
      * @return 返回JSON对象
      */
@@ -45,14 +46,14 @@ public class UserController {
         /* 默认是失败状态 */
         ResponseResult responseResult = new ResponseResult(-1, "login error");
 
-        /* 如果表单提交过来的邮箱或密码为空,直接返回错误码 */
+        /* 如果表单提交过来的邮箱或密码为空,返回错误码 */
         if (StrUtil.isEmpty(user.getEmail()) || StrUtil.isEmpty(user.getPassword())) {
             return responseResult;
         }
 
         /* 在DB中查询并验证该条记录 */
         User dbUser = userService.login(user);
-        /* 该记录不存在 */
+        /* 记录不存在,返回错误码 */
         if (dbUser == null) {
             return responseResult;
         }
@@ -63,11 +64,14 @@ public class UserController {
     }
 
     /**
-     *
+     * 实现了邮箱和密码的校验功能,在数据库中查询该条记录,判断是否存入session;
+     * 实现了自动登录的逻辑,服务端首先生成loginToken对象并生成令牌保存在cookie,
+     * 设置cookie的保存属性和存活时间,将该cookie响应给客户端;
+     * 服务端将loginToken对象保存到存放所有用户token的tokenMap里.
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String login(User user, @RequestParam("autoLogin") String autoLogin, HttpServletRequest request,
-                        HttpSession session, HttpServletResponse response) {
+                         HttpServletResponse response) {
 
         /* 创建全局作用域,存放token数据 */
         ServletContext application = request.getServletContext();
@@ -81,7 +85,7 @@ public class UserController {
         User dbUser = userService.login(user);
         /* dbUser存在,存入session */
         if (dbUser != null) {
-            session.setAttribute("login_user", user);
+            request.getSession().setAttribute("login_user", user);
         }
 
         /* 自动登陆的逻辑 */
@@ -103,7 +107,7 @@ public class UserController {
             if (tokenMap == null) {
                 /* 初始化tokenMap */
                 tokenMap = new HashMap<>();
-                /* key=md5加密过后的令牌,value为封装了用户数据 + 浏览器信息 + ip的loginToken对象 */
+                /* key为md5加密过后的令牌,value为封装了用户数据 + 浏览器信息 + ip的loginToken对象 */
                 tokenMap.put(loginToken.generateToken(), loginToken);
                 /* 将tokenMap设置到全局作用域 */
                 application.setAttribute(Constants.AUTO_LOGIN_TOKEN, tokenMap);
@@ -117,12 +121,19 @@ public class UserController {
         return "redirect:/";
     }
 
+    /**
+     * 清空了session和全局application中的用户数据,重新设置cookie失效
+     *
+     * @param request 获取session和application中的数据
+     * @param response 响应失效cookie给客户端
+     * @return 重定向到首页
+     */
     @RequestMapping(value = "/logout")
-    public String logout(HttpSession session, HttpServletResponse response, HttpServletRequest request) {
-        /* 1.清空用户session */
-        session.removeAttribute("login_user");
+    public String logout(HttpServletRequest request,HttpServletResponse response) {
+        /* 清空用户session */
+        request.getSession().removeAttribute("login_user");
 
-        /* 2.清空application中用户的登录数据 */
+        /* 清空application中用户的登录数据 */
         String autoToken = AutoLoginUtil.getCookieOfAutoToken(request.getCookies());
         if (!StrUtil.isEmpty(autoToken)) {
             ServletContext application = request.getServletContext();
@@ -132,9 +143,9 @@ public class UserController {
             tokenMap.remove(autoToken);
         }
 
-        /* 3.设置cookie失效 */
+        /* 设置cookie失效 */
         Cookie cookie = new Cookie("autoToken", "invalid");
-        /*  设置cookie保存属性 */
+        /* 设置cookie保存属性 */
         cookie.setPath("/");
         cookie.setMaxAge(1);
         response.addCookie(cookie);
@@ -199,7 +210,6 @@ public class UserController {
             result.setRcode(1);
             result.setMessage("ok");
             return result;
-
         }
         return result;
     }

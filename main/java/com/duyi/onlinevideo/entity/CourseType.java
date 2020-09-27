@@ -18,7 +18,7 @@ public class CourseType implements java.io.Serializable {
 
     /**
      * 获取id
-     * 
+     *
      * @return id
      */
     public Integer getId() {
@@ -27,7 +27,7 @@ public class CourseType implements java.io.Serializable {
 
     /**
      * 设置id
-     * 
+     *
      */
     public void setId(Integer id) {
         this.id = id;
@@ -35,7 +35,7 @@ public class CourseType implements java.io.Serializable {
 
     /**
      * 获取name
-     * 
+     *
      * @return name
      */
     public String getName() {
@@ -44,7 +44,7 @@ public class CourseType implements java.io.Serializable {
 
     /**
      * 设置name
-     * 
+     *
      * @param name
      */
     public void setName(String name) {
@@ -53,7 +53,7 @@ public class CourseType implements java.io.Serializable {
 
     /**
      * 获取flag
-     * 
+     *
      * @return flag
      */
     public Integer getFlag() {
@@ -62,7 +62,7 @@ public class CourseType implements java.io.Serializable {
 
     /**
      * 设置flag
-     * 
+     *
      * @param flag
      */
     public void setFlag(Integer flag) {

@@ -29,7 +29,7 @@ public class Banner implements java.io.Serializable {
 
     /**
      * 获取id
-     * 
+     *
      * @return id
      */
     public Integer getId() {
@@ -38,7 +38,7 @@ public class Banner implements java.io.Serializable {
 
     /**
      * 设置id
-     * 
+     *
      * @param id
      */
     public void setId(Integer id) {
@@ -47,7 +47,7 @@ public class Banner implements java.io.Serializable {
 
     /**
      * 获取imgUrl
-     * 
+     *
      * @return imgUrl
      */
     public String getImgUrl() {
@@ -56,7 +56,7 @@ public class Banner implements java.io.Serializable {
 
     /**
      * 设置imgUrl
-     * 
+     *
      * @param imgUrl
      */
     public void setImgUrl(String imgUrl) {
@@ -65,7 +65,7 @@ public class Banner implements java.io.Serializable {
 
     /**
      * 获取flag
-     * 
+     *
      * @return flag
      */
     public Integer getFlag() {
@@ -74,7 +74,7 @@ public class Banner implements java.io.Serializable {
 
     /**
      * 设置flag
-     * 
+     *
      * @param flag
      */
     public void setFlag(Integer flag) {
@@ -83,7 +83,7 @@ public class Banner implements java.io.Serializable {
 
     /**
      * 获取广告图类型标识
-     * 
+     *
      * @return 广告图类型标识
      */
     public Integer getType() {
@@ -92,7 +92,7 @@ public class Banner implements java.io.Serializable {
 
     /**
      * 设置广告图类型标识
-     * 
+     *
      * @param type
      *          广告图类型标识
      */
@@ -102,7 +102,7 @@ public class Banner implements java.io.Serializable {
 
     /**
      * 获取targetUrl
-     * 
+     *
      * @return targetUrl
      */
     public String getTargetUrl() {
@@ -111,7 +111,7 @@ public class Banner implements java.io.Serializable {
 
     /**
      * 设置targetUrl
-     * 
+     *
      * @param targetUrl
      */
     public void setTargetUrl(String targetUrl) {
@@ -120,7 +120,7 @@ public class Banner implements java.io.Serializable {
 
     /**
      * 获取createTime
-     * 
+     *
      * @return createTime
      */
     public Date getCreateTime() {
@@ -129,7 +129,7 @@ public class Banner implements java.io.Serializable {
 
     /**
      * 设置createTime
-     * 
+     *
      * @param createTime
      */
     public void setCreateTime(Date createTime) {

@@ -2,7 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.duyi.onlinevideo.dao.BannerDao">
-
     <!-- 字段映射 -->
     <resultMap id="bannerMap" type="Banner">
         <id column="id" property="id" jdbcType="INTEGER" />
@@ -58,7 +57,7 @@
     </select>
     
     <!-- 插入数据 -->
-    <insert id="insertBanner" parameterType="banner">
+    <insert id="insertBanner" parameterType="map">
         INSERT INTO banner (
             id, img_url, flag, type, target_url, create_time
         ) VALUES (

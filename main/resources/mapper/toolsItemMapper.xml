@@ -53,7 +53,7 @@
     </select>
     
     <!-- 插入数据 -->
-    <insert id="insertToolsItem" parameterType="toolsItem">
+    <insert id="insertToolsItem" parameterType="map">
         INSERT INTO tools_item (
             id, name, tools_url, icon_url, tools_type_id
         ) VALUES (

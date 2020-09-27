@@ -32,7 +32,7 @@ public class User implements java.io.Serializable {
 
     /**
      * 获取id
-     * 
+     *
      * @return id
      */
     public Integer getId() {
@@ -41,7 +41,7 @@ public class User implements java.io.Serializable {
 
     /**
      * 设置id
-     * 
+     *
      * @param id
      */
     public void setId(Integer id) {
@@ -50,7 +50,7 @@ public class User implements java.io.Serializable {
 
     /**
      * 获取mobile
-     * 
+     *
      * @return mobile
      */
     public String getMobile() {
@@ -59,7 +59,7 @@ public class User implements java.io.Serializable {
 
     /**
      * 设置mobile
-     * 
+     *
      * @param mobile
      */
     public void setMobile(String mobile) {
@@ -68,7 +68,7 @@ public class User implements java.io.Serializable {
 
     /**
      * 获取username
-     * 
+     *
      * @return username
      */
     public String getUsername() {
@@ -77,7 +77,7 @@ public class User implements java.io.Serializable {
 
     /**
      * 设置username
-     * 
+     *
      * @param username
      */
     public void setUsername(String username) {
@@ -86,7 +86,7 @@ public class User implements java.io.Serializable {
 
     /**
      * 获取password
-     * 
+     *
      * @return password
      */
     public String getPassword() {
@@ -95,7 +95,7 @@ public class User implements java.io.Serializable {
 
     /**
      * 设置password
-     * 
+     *
      * @param password
      */
     public void setPassword(String password) {
@@ -104,7 +104,7 @@ public class User implements java.io.Serializable {
 
     /**
      * 获取email
-     * 
+     *
      * @return email
      */
     public String getEmail() {
@@ -113,7 +113,7 @@ public class User implements java.io.Serializable {
 
     /**
      * 设置email
-     * 
+     *
      * @param email
      */
     public void setEmail(String email) {
@@ -122,7 +122,7 @@ public class User implements java.io.Serializable {
 
     /**
      * 获取vipFlag
-     * 
+     *
      * @return vipFlag
      */
     public String getVipFlag() {
@@ -131,7 +131,7 @@ public class User implements java.io.Serializable {
 
     /**
      * 设置vipFlag
-     * 
+     *
      * @param vipFlag
      */
     public void setVipFlag(String vipFlag) {
@@ -140,7 +140,7 @@ public class User implements java.io.Serializable {
 
     /**
      * 获取createTime
-     * 
+     *
      * @return createTime
      */
     public Date getCreateTime() {
@@ -149,7 +149,7 @@ public class User implements java.io.Serializable {
 
     /**
      * 设置createTime
-     * 
+     *
      * @param createTime
      */
     public void setCreateTime(Date createTime) {

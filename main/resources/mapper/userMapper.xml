@@ -9,7 +9,7 @@
         <result column="username" property="username" jdbcType="VARCHAR" />
         <result column="password" property="password" jdbcType="VARCHAR" />
         <result column="email" property="email" jdbcType="VARCHAR" />
-        <result column="vip_flag" property="vipFlag" jdbcType="VARCHAR" />
+        <result column="vip_flag" property="vipFlag" jdbcType="INTEGER" />
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     </resultMap>
 
@@ -24,32 +24,32 @@
         <include refid="allColumns" />
         FROM user u
     </select>
-    
+
     <!-- 根据条件参数查询数据列表 -->
     <select id="findUserByCondition" resultMap="userMap" parameterType="map">
         SELECT
         <include refid="allColumns" />
         FROM user u WHERE 1 = 1
         <if test="mobile != null and mobile != ''">
-            AND u.mobile LIKE CONCAT('%', #{mobile}, '%')
+            AND u.mobile = #{mobile}
         </if>
         <if test="username != null and username != ''">
-            AND u.username LIKE CONCAT('%', #{username}, '%')
+            AND u.username = #{username}
         </if>
         <if test="password != null and password != ''">
-            AND u.password LIKE CONCAT('%', #{password}, '%')
+            AND u.password = #{password}
         </if>
         <if test="email != null and email != ''">
-            AND u.email LIKE CONCAT('%', #{email}, '%')
+            AND u.email = #{email}
         </if>
-        <if test="vip_flag != null">
-            AND u.vip_flag = #{vip_flag}
+        <if test="vipFlag != null">
+            AND u.vip_flag = #{vipFlag}
         </if>
         <if test="createTime != null">
             AND u.create_time = #{createTime}
         </if>
     </select>
-    
+
     <!-- 根据主键查询数据 -->
     <select id="findUserByIds" resultMap="userMap" parameterType="list">
         SELECT
@@ -59,7 +59,7 @@
             #{id}
         </foreach>
     </select>
-    
+
     <!-- 插入数据 -->
     <insert id="insertUser" parameterType="user">
         INSERT INTO user (
@@ -74,6 +74,32 @@
             #{createTime}
         )
     </insert>
+
+    <!-- 修改数据 -->
+    <update id="updateUser" parameterType="map">
+        UPDATE user
+        <set>
+            <if test="mobile != null">
+                mobile = #{mobile},
+            </if>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="password != null">
+                password = #{password},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+            <if test="vipFlag != null">
+                vip_flag = #{vipFlag},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime}
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
 
     <!-- 批量修改数据 -->
     <update id="updateUsers" parameterType="list">

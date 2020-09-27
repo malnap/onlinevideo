@@ -1,13 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <title>课程列表</title>
-
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="/static/css/duyi-video.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/duyi-video.css" crossorigin="anonymous">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/bootstrap.min.css" crossorigin="anonymous">
 </head>
@@ -32,218 +31,52 @@
         </li>
     </ul>
 
-    <div class="row row-cols-1 row-cols-md-4 mt-2">
+    <c:forEach items="${topicList.list}" var="topic" varStatus="idx" begin="0">
+        <c:if test="${idx.index % 4 == 0 }">
+            <div class="row row-cols-1 row-cols-md-4 mt-2">
+        </c:if>
         <div class="col mb-3">
             <a href="#" target="_blank">
                 <div class="card select-shadow">
-                    <img src="${pageContext.request.contextPath}/static/imgs/card_item.png" class="card-img-top" alt="...">
+                    <img src="${topic.iconUrl}" class="card-img-top" alt="...">
                     <div class="card-body">
-                        <p class="card-text">Springboot</p>
-                        <p class="card-text">1000人学习</p>
-                        <span class="badge badge-pill badge-success ">免费</span>
+                        <p class="card-text">${topic.title}</p>
+                        <p class="card-text">${topic.views}人学习</p>
+                        <c:choose>
+                            <c:when test="${topic.vipFlag == 0}">
+                                <span class="badge badge-pill badge-success ">免费</span>
+                            </c:when>
+
+                            <c:otherwise>
+                                <span class="badge badge-pill badge-danger ">会员</span>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </div>
             </a>
         </div>
-        <div class="col mb-3">
-            <a href="#" target="_blank">
-                <div class="card select-shadow">
-                    <img src="${pageContext.request.contextPath}/static/imgs/card_item.png" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <p class="card-text">Springboot</p>
-                        <p class="card-text">1000人学习</p>
-                        <span class="badge badge-pill badge-success ">免费</span>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col mb-3">
-            <a href="#" target="_blank">
-                <div class="card select-shadow">
-                    <img src="${pageContext.request.contextPath}/static/imgs/card_item.png" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <p class="card-text">Springboot</p>
-                        <p class="card-text">1000人学习</p>
-                        <span class="badge badge-pill badge-success ">免费</span>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col mb-3">
-            <a href="#" target="_blank">
-                <div class="card select-shadow">
-                    <img src="${pageContext.request.contextPath}/static/imgs/card_item.png" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <p class="card-text">Springboot</p>
-                        <p class="card-text">1000人学习</p>
-                        <span class="badge badge-pill badge-success ">免费</span>
-                    </div>
-                </div>
-            </a>
-        </div>
-    </div>
-    <div class="row row-cols-1 row-cols-md-4 mt-2">
-        <div class="col mb-3">
-            <a href="#" target="_blank">
-                <div class="card select-shadow">
-                    <img src="/static/imgs/card_item.png" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <p class="card-text">Springboot</p>
-                        <p class="card-text">1000人学习</p>
-                        <span class="badge badge-pill badge-success ">免费</span>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col mb-3">
-            <a href="#" target="_blank">
-                <div class="card select-shadow">
-                    <img src="/static/imgs/card_item.png" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <p class="card-text">Springboot</p>
-                        <p class="card-text">1000人学习</p>
-                        <span class="badge badge-pill badge-success ">免费</span>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col mb-3">
-            <a href="#" target="_blank">
-                <div class="card select-shadow">
-                    <img src="/static/imgs/card_item.png" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <p class="card-text">Springboot</p>
-                        <p class="card-text">1000人学习</p>
-                        <span class="badge badge-pill badge-success ">免费</span>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col mb-3">
-            <a href="#" target="_blank">
-                <div class="card select-shadow">
-                    <img src="/static/imgs/card_item.png" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <p class="card-text">Springboot</p>
-                        <p class="card-text">1000人学习</p>
-                        <span class="badge badge-pill badge-success ">免费</span>
-                    </div>
-                </div>
-            </a>
-        </div>
-    </div>
-    <div class="row row-cols-1 row-cols-md-4 mt-2">
-        <div class="col mb-3">
-            <a href="#" target="_blank">
-                <div class="card select-shadow">
-                    <img src="/static/imgs/card_item.png" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <p class="card-text">Springboot</p>
-                        <p class="card-text">1000人学习</p>
-                        <span class="badge badge-pill badge-success ">免费</span>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col mb-3">
-            <a href="#" target="_blank">
-                <div class="card select-shadow">
-                    <img src="/static/imgs/card_item.png" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <p class="card-text">Springboot</p>
-                        <p class="card-text">1000人学习</p>
-                        <span class="badge badge-pill badge-success ">免费</span>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col mb-3">
-            <a href="#" target="_blank">
-                <div class="card select-shadow">
-                    <img src="/static/imgs/card_item.png" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <p class="card-text">Springboot</p>
-                        <p class="card-text">1000人学习</p>
-                        <span class="badge badge-pill badge-success ">免费</span>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col mb-3">
-            <a href="#" target="_blank">
-                <div class="card select-shadow">
-                    <img src="/static/imgs/card_item.png" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <p class="card-text">Springboot</p>
-                        <p class="card-text">1000人学习</p>
-                        <span class="badge badge-pill badge-success ">免费</span>
-                    </div>
-                </div>
-            </a>
-        </div>
-    </div>
-    <div class="row row-cols-1 row-cols-md-4 mt-2">
-        <div class="col mb-3">
-            <a href="#" target="_blank">
-                <div class="card select-shadow">
-                    <img src="/static/imgs/card_item.png" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <p class="card-text">Springboot</p>
-                        <p class="card-text">1000人学习</p>
-                        <span class="badge badge-pill badge-success ">免费</span>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col mb-3">
-            <a href="#" target="_blank">
-                <div class="card select-shadow">
-                    <img src="/static/imgs/card_item.png" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <p class="card-text">Springboot</p>
-                        <p class="card-text">1000人学习</p>
-                        <span class="badge badge-pill badge-success ">免费</span>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col mb-3">
-            <a href="#" target="_blank">
-                <div class="card select-shadow">
-                    <img src="/static/imgs/card_item.png" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <p class="card-text">Springboot</p>
-                        <p class="card-text">1000人学习</p>
-                        <span class="badge badge-pill badge-success ">免费</span>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col mb-3">
-            <a href="#" target="_blank">
-                <div class="card select-shadow">
-                    <img src="/static/imgs/card_item.png" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <p class="card-text">Springboot</p>
-                        <p class="card-text">1000人学习</p>
-                        <span class="badge badge-pill badge-success ">免费</span>
-                    </div>
-                </div>
-            </a>
-        </div>
-    </div>
+        <c:if test="${idx.index % 4 == 3 || idx.last}">
+            </div>
+        </c:if>
+    </c:forEach>
 
     <%-- 分页--%>
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
             <li class="page-item disabled">
-                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">上一页</a>
             </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <%--            //导航条上的第一页--%>
+            <%--            private int navigateFirstPage;--%>
+            <%--            //导航条上的最后一页--%>
+            <%--            private int navigateLastPage;--%>
+            <c:forEach var="i" begin="${topicList.navigateFirstPage}" end="${topicList.navigateLastPage}">
+                <li class="page-item ${topicList.pageNum == i ? "active" : ""}">
+                    <a class="page-link" href="/courseList/type/${typeId}?pageNum=${i}">${i}</a>
+                </li>
+            </c:forEach>
             <li class="page-item">
-                <a class="page-link" href="#">Next</a>
+                <a class="page-link" href="#">下一页</a>
             </li>
         </ul>
     </nav>
