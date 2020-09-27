@@ -1,7 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-
 <nav class="navbar navbar-expand-lg navbar-light bg-light shadow">
 
     <div class="container">
@@ -14,20 +13,20 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
+                <li class="nav-item ${focusIndex == 1 ? "active" : ""}">
                     <a class="nav-link" href="/">首页 <span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item ${focusIndex == 2 ? "active" : ""}">
                     <a class="nav-link" href="/courseList">课程</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item ${focusIndex == 3 ? "active" : ""}">
                     <a class="nav-link" href="/vip">会员</a>
                 </li>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">直播</a>
+                <li class="nav-item ${focusIndex == 4 ? "active" : ""}">
+                    <a class="nav-link" href="/live">直播</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item ${focusIndex == 5 ? "active" : ""}">
                     <a class="nav-link" href="/tools">工具</a>
                 </li>
 
@@ -44,19 +43,19 @@
                     </div>
                 </li>
             </ul>
-                </c:when>
-                <c:otherwise>
-                    </ul>
-                    <a href="#" data-toggle="modal" data-target="#loginModal" data-whatever="@fat" class="mr-1">登录</a> /
-                    <a href="#" data-toggle="modal" data-target="#registModal" data-whatever="@mdo"
-                       class="ml-1 mr-3">注册</a>
-                </c:otherwise>
-                </c:choose>
+            </c:when>
+            <c:otherwise>
+                </ul>
+                <a href="#" data-toggle="modal" data-target="#loginModal" data-whatever="@fat" class="mr-1">登录</a> /
+                <a href="#" data-toggle="modal" data-target="#registModal" data-whatever="@mdo"
+                   class="ml-1 mr-3">注册</a>
+            </c:otherwise>
+            </c:choose>
 
-                <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="搜索视频" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">搜索</button>
-                </form>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="搜索视频" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">搜索</button>
+            </form>
         </div>
 
     </div>

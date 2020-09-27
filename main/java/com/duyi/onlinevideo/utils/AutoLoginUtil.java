@@ -75,23 +75,7 @@ public class AutoLoginUtil {
     }
 
     /**
-     * 通过全局application获取用户信息
-     */
-    public static User getUserByApplication(Cookie[] cookies, ServletContext application) {
-        /* 拿到存储在浏览器端的名为autoToken的cookie值 */
-        String cookieToken = getCookieOfAutoToken(cookies);
-
-        /* 获取服务器中的所有用户登录的token数据 */
-        @SuppressWarnings("unchecked")
-        HashMap<String, LoginToken> tokenMap = (HashMap<String, LoginToken>) application.getAttribute(Constants.AUTO_LOGIN_TOKEN);
-
-        /* 根据客户端的token,获取服务器中的用户数据 */
-        LoginToken token = tokenMap.get(cookieToken);
-        return token.getUser();
-    }
-
-    /**
-     * 校验用户的token是否有效,token存在且没有失效
+     * 校验用户的token是否有效,是否失效
      */
     public static boolean checkLoginToken(Cookie[] cookies, ServletContext application) {
 
@@ -118,17 +102,18 @@ public class AutoLoginUtil {
         }
 
         /* 根据客户端的token,获取服务器中的用户数据 */
-        LoginToken token = tokenMap.get(cookieToken);
+        LoginToken loginToken = tokenMap.get(cookieToken);
 
         /* 服务器中没有对应的用户数据 */
-        if (ObjectUtil.isEmpty(token)) {
+        if (ObjectUtil.isEmpty(loginToken)) {
             return false;
         }
 
         /* 生成token(只要数据不变,token值就唯一) */
-        String serverToken = token.generateToken();
+        String serverToken = loginToken.generateToken();
         /* 用户上一次登录的时间 */
-        String tokenTime = token.getNow();
+        String tokenTime = loginToken.getNow();
+        /* 格式转化 */
         DateTime tokenDateTime = DateUtil.parse(tokenTime);
 
         /* 判断token是否超时,48小时 60 * 60 * 48 * 1000 = 172800000 */
@@ -139,6 +124,22 @@ public class AutoLoginUtil {
 
         /* 验证通过可以自动登录;客户端token凭证失效,需要重新登陆 */
         return cookieToken.equals(serverToken);
+    }
+
+    /**
+     * 通过全局application获取用户信息
+     */
+    public static User getUserByApplication(Cookie[] cookies, ServletContext application) {
+        /* 拿到存储在浏览器端的名为autoToken的cookie值 */
+        String cookieToken = getCookieOfAutoToken(cookies);
+
+        /* 获取服务器中的所有用户登录的token数据 */
+        @SuppressWarnings("unchecked")
+        HashMap<String, LoginToken> tokenMap = (HashMap<String, LoginToken>) application.getAttribute(Constants.AUTO_LOGIN_TOKEN);
+
+        /* 根据客户端的token,获取服务器中的用户数据 */
+        LoginToken loginToken = tokenMap.get(cookieToken);
+        return loginToken.getUser();
     }
 
     /**

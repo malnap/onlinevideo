@@ -29,6 +29,7 @@
     <mvc:interceptors>
         <!-- 自动登录拦截器 -->
         <mvc:interceptor>
+            <!-- 拦截所有的请求 -->
             <mvc:mapping path="/**"/>
             <bean class="com.duyi.onlinevideo.interceptor.AutoLoginInterceptor"></bean>
         </mvc:interceptor>
