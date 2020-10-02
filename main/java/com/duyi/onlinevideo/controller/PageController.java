@@ -1,12 +1,9 @@
 package com.duyi.onlinevideo.controller;
 
-import com.duyi.onlinevideo.entity.Banner;
-import com.duyi.onlinevideo.entity.CourseTopic;
-import com.duyi.onlinevideo.service.BannerService;
-import com.duyi.onlinevideo.service.CourseTopicService;
+import com.duyi.onlinevideo.entity.*;
+import com.duyi.onlinevideo.service.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +20,15 @@ public class PageController {
 
     @Autowired
     private BannerService bannerService;
+
+    @Autowired
+    CourseTypeService courseTypeService;
+
+    @Autowired
+    ToolsItemService toolsItemService;
+
+    @Autowired
+    ToolsTypeService toolsTypeService;
 
     @RequestMapping("/")
     public String indexPage(Model model) {
@@ -63,16 +69,24 @@ public class PageController {
         /* 最新课程 */
         PageInfo<CourseTopic> newestTopicList = courseTopicService.getIndexNewestList();
         model.addAttribute("topicList", newestTopicList);
+
+        List<CourseType> courseTypeList = courseTypeService.getCourseTypeAll();
+        model.addAttribute("courseTypeList", courseTypeList);
+
         return "course_list";
     }
 
     @RequestMapping("/courseList/type/{typeId}")
     public String courseList(@PathVariable Integer typeId, Integer pageNum, Model model) {
         model.addAttribute("typeId", typeId);
+        model.addAttribute("focusIndex", 2);
 
         if (pageNum == null || pageNum < 1) {
             pageNum = 1;
         }
+
+        List<CourseType> courseTypeList = courseTypeService.getCourseTypeAll();
+        model.addAttribute("courseTypeList", courseTypeList);
 
         PageHelper.startPage(1, 16);
 
@@ -101,11 +115,44 @@ public class PageController {
     @RequestMapping(value = "/tools")
     public String toolsPage(Model model) {
         model.addAttribute("focusIndex", 5);
+        model.addAttribute("toolsTypeId", 0);
+
+        PageHelper.startPage(1, 16);
+        PageInfo<ToolsItem> toolsList = toolsItemService.getToolsItemAll();
+        model.addAttribute("toolsList", toolsList);
+
+        List<ToolsType> toolsTypeList = toolsTypeService.getToolsTypeAll();
+        model.addAttribute("toolsTypeList", toolsTypeList);
+
         return "tools";
     }
 
-    @RequestMapping("courseVideo")
-    public String courseVideo() {
-        return "course_video";
+    @RequestMapping(value = "/toolsList/type/{toolsTypeId}")
+    public String toolsList(@PathVariable Integer toolsTypeId, Model model, Integer pageNum) {
+        model.addAttribute("toolsTypeId", toolsTypeId);
+        model.addAttribute("focusIndex", 5);
+
+        if (pageNum == null || pageNum <= 1) {
+            pageNum = 1;
+        }
+
+        List<ToolsType> toolsTypeList = toolsTypeService.getToolsTypeAll();
+        model.addAttribute("toolsTypeList", toolsTypeList);
+
+        PageHelper.startPage(pageNum, 16);
+
+        PageInfo<ToolsItem> toolsList = null;
+        if (toolsTypeId == 0) {
+            // 最新
+            toolsList = toolsItemService.getToolsItemAll();
+
+        } else {
+            // 对应类型
+            toolsList = toolsItemService.getToolsItem(toolsTypeId);
+        }
+
+        model.addAttribute("toolsList", toolsList);
+
+        return "tools";
     }
 }

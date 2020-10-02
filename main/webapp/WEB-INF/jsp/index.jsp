@@ -19,7 +19,6 @@
 <br><br>
 <%--首页内容区域--%>
 <div class="container">
-
     <%-- 轮播图 --%>
     <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
         <%--  轮播下划线 --%>
@@ -62,7 +61,7 @@
     <div class="row row-cols-1 row-cols-md-4 mt-2">
         <c:forEach items="${newestTopicList.list}" var="topic">
             <div class="col mb-3">
-                <a href="#" target="_blank">
+                <a href="/topic/${topic.id}" target="_blank">
                     <div class="card select-shadow">
                         <img src="${topic.iconUrl}" class="card-img-top" alt="...">
                         <div class="card-body">
@@ -85,7 +84,7 @@
     </div>
     <br>
 
-    <%--最新常用框架类型--%>
+    <%--常用框架类型--%>
     <div class="border border-top-0 border-left-0  border-right-0  border-secondary">
         <a href="${pageContext.request.contextPath}/courseList/type/3" class="float-right">更多 ></a>
         <h4 class="text-center">常用框架</h4>
@@ -94,7 +93,7 @@
     <div class="row row-cols-1 row-cols-md-4 mt-2">
         <c:forEach items="${courseTopicList.list}" var="topic">
             <div class="col mb-3">
-                <a href="#" target="_blank">
+                <a href="/topic/${topic.id}" target="_blank">
                     <div class="card select-shadow">
                         <img src="${topic.iconUrl}" class="card-img-top" alt="...">
                         <div class="card-body">

@@ -7,6 +7,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -41,5 +42,13 @@ public class CourseTopicServiceImpl implements CourseTopicService {
         List<CourseTopic> list = courseTopicDao.findCourseTopicByCondition(map);
 
         return new PageInfo<>(list);
+    }
+
+    @Override
+    public CourseTopic getCourseTopic(int topicId) {
+        List<Integer> ids = new ArrayList<>();
+        ids.add(topicId);
+        List<CourseTopic> list = courseTopicDao.findCourseTopicByIds(ids);
+        return list.get(0);
     }
 }

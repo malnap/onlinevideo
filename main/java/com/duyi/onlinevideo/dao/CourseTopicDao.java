@@ -11,5 +11,7 @@ public interface CourseTopicDao {
 
     int insertCourseTopic(CourseTopic courseTopic);
 
+    List<CourseTopic> findCourseTopicByIds(List<Integer> ids);
+
     List<CourseTopic> findCourseTopicByCondition(HashMap<String, Object> map);
 }

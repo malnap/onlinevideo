@@ -18,4 +18,6 @@ public interface CourseTopicService {
      */
     PageInfo<CourseTopic> getIndexNewestList();
 
+    CourseTopic getCourseTopic(int topicId);
+
 }
